@@ -1,0 +1,24 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Compile and Run Fortran",
+        "type": "shell",
+        "command": "gfortran",
+        "args": [
+          "-o",
+          "${fileDirname}/${fileBasenameNoExtension}",
+          "${fileDirname}/ProductoModule.f90",
+          "${file}"
+        ],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "presentation": {
+          "reveal": "always"
+        },
+        "problemMatcher": []
+      }
+    ]
+  }
