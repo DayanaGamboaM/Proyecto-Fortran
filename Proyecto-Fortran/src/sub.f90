@@ -1,11 +1,3 @@
-MODULE ProductoModule
-  TYPE :: Producto
-    CHARACTER(50) :: nombre
-    INTEGER :: cantidad_disponible
-    REAL :: precio_unitario
-  END TYPE Producto
-END MODULE ProductoModule
-
 PROGRAM GestionInventario
   USE ProductoModule
 
@@ -66,18 +58,46 @@ CONTAINS
     INTEGER :: cantidad_actualizar
     INTEGER :: i   ! Agregamos la declaración de 'i'
 
-    WRITE(*,*) "Ingrese el nombre del producto para actualizar la cantidad:"
-    READ(*,*) nombre_producto
+    integer :: opcion
+    WRITE(*,*) "1. Agregar stock"
+    WRITE(*,*) "2. Disminuir stock"
+    READ(*,*) opcion
 
-    DO i = 1, num_productos
-      IF (TRIM(ADJUSTL(nombre_producto)) == TRIM(ADJUSTL(inventario(i)%nombre))) THEN
-        WRITE(*,*) "Ingrese la cantidad a agregar/restar:"
-        READ(*,*) cantidad_actualizar
-        inventario(i)%cantidad_disponible = inventario(i)%cantidad_disponible + cantidad_actualizar
-        WRITE(*,*) "Cantidad actualizada con éxito."
-        RETURN
-      END IF
-    END DO
+
+      SELECT CASE(opcion)
+      CASE(1)
+        WRITE(*,*) "Ingrese el nombre del producto a agregar al stock:"
+        READ(*,*) nombre_producto
+
+        DO i = 1, num_productos
+          IF (TRIM(ADJUSTL(nombre_producto)) == TRIM(ADJUSTL(inventario(i)%nombre))) THEN
+            WRITE(*,*) "Ingrese la cantidad a agregar:"
+            READ(*,*) cantidad_actualizar
+            inventario(i)%cantidad_disponible = inventario(i)%cantidad_disponible + cantidad_actualizar
+            WRITE(*,*) "Cantidad actualizada con éxito."
+            RETURN
+          END IF
+        END DO
+
+        WRITE(*,*) "Producto agregado al inventario."
+
+      CASE(2)
+        WRITE(*,*) "Ingrese el nombre del producto a restar al stock:"
+        READ(*,*) nombre_producto
+
+        DO i = 1, num_productos
+          IF (TRIM(ADJUSTL(nombre_producto)) == TRIM(ADJUSTL(inventario(i)%nombre))) THEN
+            WRITE(*,*) "Ingrese la cantidad a restar:"
+            READ(*,*) cantidad_actualizar
+            inventario(i)%cantidad_disponible = inventario(i)%cantidad_disponible - cantidad_actualizar
+            WRITE(*,*) "Cantidad actualizada con éxito."
+            RETURN
+          END IF
+        END DO
+
+      CASE DEFAULT
+        WRITE(*,*) "Opción no válida."
+    END SELECT
 
     WRITE(*,*) "Producto no encontrado en el inventario."
   END SUBROUTINE ActualizarCantidad
@@ -121,6 +141,11 @@ CONTAINS
             WRITE(*,*) "Cantidad Disponible:", inventario(i)%cantidad_disponible
             WRITE(*,*) "Precio Unitario:", inventario(i)%precio_unitario
           END IF
+
+          !IF (inventario(i)%precio_unitario = precio_min .AND. inventario(i)%precio_unitario = precio_max) THEN
+          !  print *, 'No tenemos productos para este rango de precios'
+           
+         ! END IF
         END DO
 
       CASE DEFAULT

@@ -8,7 +8,7 @@
         "args": [
           "-o",
           "${fileDirname}/${fileBasenameNoExtension}",
-          "${fileDirname}/ProductoModule.f90",
+          "${fileDirname}/inventarioModule.f90",
           "${file}"
         ],
         "group": {
