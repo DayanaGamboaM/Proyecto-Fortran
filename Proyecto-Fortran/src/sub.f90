@@ -140,6 +140,8 @@ CONTAINS
             WRITE(*,*) "Nombre:", inventario(i)%nombre
             WRITE(*,*) "Cantidad Disponible:", inventario(i)%cantidad_disponible
             WRITE(*,*) "Precio Unitario:", inventario(i)%precio_unitario
+          ELSE
+            WRITE(*,*) "No existen productos en ese rango de precios"
           END IF
 
           !IF (inventario(i)%precio_unitario = precio_min .AND. inventario(i)%precio_unitario = precio_max) THEN
