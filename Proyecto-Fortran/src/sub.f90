@@ -107,8 +107,9 @@ CONTAINS
     INTEGER :: num_productos
     CHARACTER(50) :: nombre_producto
     REAL :: precio_min, precio_max
-    
-    integer :: opcion
+    CHARACTER :: input_precio_min, input_precio_max
+    INTEGER :: iostat
+    INTEGER :: opcion
     WRITE(*,*) "1. Consultar por nombre"
     WRITE(*,*) "2. Consultar por rango de precios"
     READ(*,*) opcion
@@ -131,17 +132,37 @@ CONTAINS
 
       CASE(2)
         WRITE(*,*) "Ingrese el precio mínimo:"
-        READ(*,*) precio_min
+        READ(*,*) input_precio_min
         WRITE(*,*) "Ingrese el precio máximo:"
-        READ(*,*) precio_max
+        READ(*,*) input_precio_max
+
+
+
+      ! Verifica si los valores ingresados son numéricos y no negativos
+      READ(input_precio_min, *, IOSTAT = iostat) precio_min
+
+      IF (iostat /= 0) THEN
+        WRITE(*,*) "El valor ingresado para precio mínimo no es numérico. Intente nuevamente."
+      ELSE IF (precio_min < 0.0) THEN
+        WRITE(*,*) "El valor ingresado para precio mínimo no puede ser negativo. Intente nuevamente."
+      ELSE
+        READ(input_precio_max, *, IOSTAT = iostat) precio_max
+        IF (iostat /= 0) THEN
+          WRITE(*,*) "El valor ingresado para precio máximo no es numérico. Intente nuevamente."
+        ELSE IF (precio_max < 0.0) THEN
+          WRITE(*,*) "El valor ingresado para precio máximo no puede ser negativo. Intente nuevamente."
+        ELSE
+          ! (Continúa con la lógica para consultar por rango de precios)
+        END IF
+      END IF
+
+
 
         DO i = 1, num_productos
           IF (inventario(i)%precio_unitario >= precio_min .AND. inventario(i)%precio_unitario <= precio_max) THEN
             WRITE(*,*) "Nombre:", inventario(i)%nombre
             WRITE(*,*) "Cantidad Disponible:", inventario(i)%cantidad_disponible
             WRITE(*,*) "Precio Unitario:", inventario(i)%precio_unitario
-          ELSE
-            WRITE(*,*) "No existen productos en ese rango de precios"
           END IF
 
           !IF (inventario(i)%precio_unitario = precio_min .AND. inventario(i)%precio_unitario = precio_max) THEN
@@ -154,5 +175,24 @@ CONTAINS
         WRITE(*,*) "Opción no válida."
     END SELECT
   END SUBROUTINE ConsultarProductos
+
+
+ FUNCTION es_numerico_nonegativo(valor)
+  IMPLICIT NONE
+  CHARACTER(*), INTENT(IN) :: valor
+  LOGICAL :: es_numerico_nonegativo
+  REAL :: numero
+  integer :: nn
+  ! Intenta convertir el valor a tipo REAL, si hay un error, no es numérico
+  READ(valor, *, IOSTAT= nn) numero
+
+  IF (nn == 0 .AND. numero >= 0.0) THEN
+    es_numerico_nonegativo = .TRUE.
+  ELSE
+    es_numerico_nonegativo = .FALSE.
+  END IF
+
+END FUNCTION es_numerico_nonegativo
+  
 
 END PROGRAM GestionInventario
