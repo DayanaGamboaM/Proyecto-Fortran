@@ -143,7 +143,7 @@ CONTAINS
           END IF
 
           !IF (inventario(i)%precio_unitario = precio_min .AND. inventario(i)%precio_unitario = precio_max) THEN
-          !  print *, 'No tenemos productos para este rango de precios'
+          !  print *, 'No tenemos productos para este rango de precios' 
            
          ! END IF
         END DO
