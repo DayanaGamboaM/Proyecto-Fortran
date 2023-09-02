@@ -1,11 +1,11 @@
 PROGRAM GestionInventario
+  !Se utiliza la estructura de producto creada
   USE ProductoModule
 
   INTEGER, PARAMETER :: MAX_PRODUCTOS = 100
   TYPE(Producto), DIMENSION(MAX_PRODUCTOS) :: inventario
   INTEGER :: num_productos = 0
-
- integer :: opcion
+  Integer :: opcion
 
   DO
     
@@ -33,10 +33,13 @@ PROGRAM GestionInventario
 
 CONTAINS
 
+  !Definicion de las subrutinas para las operaciones de registro, actualización y consulta de productos
+  
   SUBROUTINE RegistrarProducto(inventario, num_productos)
     TYPE(Producto), DIMENSION(:) :: inventario
     INTEGER :: num_productos
 
+    !Registro de producto, no se podrán registrar más de 100 productos
     IF (num_productos < MAX_PRODUCTOS) THEN
       WRITE(*,*) "Ingrese el nombre del producto:"
       READ(*,*) inventario(num_productos+1)%nombre
@@ -52,13 +55,16 @@ CONTAINS
   END SUBROUTINE RegistrarProducto
 
   SUBROUTINE ActualizarCantidad(inventario, num_productos)
+    !Actualización de producto, las opciones existentes son (agregar o disminuir stock)
+    !opc(1) Agregar stock -> se realiza suma al inventario
+    !opc(2) Disminuir stock -> se realiza resta al inventario
+    !otra opc no es válida
     TYPE(Producto), DIMENSION(:) :: inventario
     INTEGER :: num_productos
     CHARACTER(50) :: nombre_producto
     INTEGER :: cantidad_actualizar
-    INTEGER :: i   ! Agregamos la declaración de 'i'
-
-    integer :: opcion
+    INTEGER :: i  
+    INTEGER :: opcion
     WRITE(*,*) "1. Agregar stock"
     WRITE(*,*) "2. Disminuir stock"
     READ(*,*) opcion
@@ -103,6 +109,7 @@ CONTAINS
   END SUBROUTINE ActualizarCantidad
 
   SUBROUTINE ConsultarProductos(inventario, num_productos)
+    !Consulta de productos,las opciones son (consulta por nombre o rango de precio)
     TYPE(Producto), DIMENSION(:) :: inventario
     INTEGER :: num_productos
     CHARACTER(50) :: nombre_producto
@@ -115,6 +122,7 @@ CONTAINS
     READ(*,*) opcion
 
     SELECT CASE(opcion)
+      !Consulta por nombre de producto
       CASE(1)
         WRITE(*,*) "Ingrese el nombre del producto a consultar:"
         READ(*,*) nombre_producto
@@ -131,14 +139,15 @@ CONTAINS
         WRITE(*,*) "Producto no encontrado en el inventario."
 
       CASE(2)
+        !Consulta por rango de precio
         WRITE(*,*) "Ingrese el precio mínimo:"
         READ(*,*) input_precio_min
         WRITE(*,*) "Ingrese el precio máximo:"
         READ(*,*) input_precio_max
 
 
-
-      ! Verifica si los valores ingresados son numéricos y no negativos
+!ARREGLAAAAAAAAAAAR do while
+      !Verifica si los valores ingresados son numéricos y no negativos
       READ(input_precio_min, *, IOSTAT = iostat) precio_min
 
       IF (iostat /= 0) THEN
@@ -152,11 +161,10 @@ CONTAINS
         ELSE IF (precio_max < 0.0) THEN
           WRITE(*,*) "El valor ingresado para precio máximo no puede ser negativo. Intente nuevamente."
         ELSE
+
           ! (Continúa con la lógica para consultar por rango de precios)
         END IF
       END IF
-
-
 
         DO i = 1, num_productos
           IF (inventario(i)%precio_unitario >= precio_min .AND. inventario(i)%precio_unitario <= precio_max) THEN
@@ -177,22 +185,6 @@ CONTAINS
   END SUBROUTINE ConsultarProductos
 
 
- FUNCTION es_numerico_nonegativo(valor)
-  IMPLICIT NONE
-  CHARACTER(*), INTENT(IN) :: valor
-  LOGICAL :: es_numerico_nonegativo
-  REAL :: numero
-  integer :: nn
-  ! Intenta convertir el valor a tipo REAL, si hay un error, no es numérico
-  READ(valor, *, IOSTAT= nn) numero
-
-  IF (nn == 0 .AND. numero >= 0.0) THEN
-    es_numerico_nonegativo = .TRUE.
-  ELSE
-    es_numerico_nonegativo = .FALSE.
-  END IF
-
-END FUNCTION es_numerico_nonegativo
   
 
 END PROGRAM GestionInventario
